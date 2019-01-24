@@ -62,13 +62,13 @@ public class ODE implements FirstOrderDifferentialEquations {
         an=(0.01*(10-x[3]))/(Math.exp((10-x[3])/10)-1); //18a
         bn=0.125*Math.exp(-x[3]/80); //18b
         ah=0.07*Math.exp(-x[3]/20); //19a
-        bh=1/(Math.exp((30-x[3])/30)-1); //19b
+        bh=1/(Math.exp((30-x[3])/10)+1); //19b
 
 
         dxdt[0]=am*(1-x[0])-bm*x[0]; //16a
         dxdt[1]=an*(1-x[1])-bn*x[1]; //16b
         dxdt[2]=ah*(1-x[2])-bh*x[2]; //16c
-        dxdt[3]=(-1*((gNa*Math.pow(x[0],3.0)*(x[3]-ENa))+((gK*Math.pow(x[1],4.0)*(x[3]-EK))+(gL*(x[3]-EL))))+I)/C; //20
+        dxdt[3]=(-1*((gNa*Math.pow(x[0],3.0)*x[2]*(x[3]-ENa))+((gK*Math.pow(x[1],4.0)*(x[3]-EK))+(gL*(x[3]-EL))))+I)/C; //20
 
 
 

@@ -2,82 +2,190 @@ package sample;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.nonstiff.ClassicalRungeKuttaIntegrator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 public class Controller {
 
     @FXML
-    private Button doButton;
+    private LineChart<Number, Number> utChart;
 
     @FXML
-    private LineChart<Number, Number> uChart;
+    private NumberAxis uxAxis;
 
     @FXML
-    private NumberAxis xAxisuChart;
+    private NumberAxis uyAxis;
 
     @FXML
-    private NumberAxis yAxisUChart;
+    private LineChart<Number, Number> itChart;
 
     @FXML
-    private LineChart<Number, Number> vChart;
+    private NumberAxis ixAxis;
 
     @FXML
-    private NumberAxis xAxisvChart;
+    private NumberAxis iyAxis;
 
     @FXML
-    private NumberAxis yAxisvChart;
+    private TextField stdTextField;
 
     @FXML
-    private LineChart<Number, Number> IChart;
+    private TextField avgTextField;
 
     @FXML
-    private NumberAxis xAxisiChart;
+    private TextField maxTextField;
 
     @FXML
-    private NumberAxis yAxisiChart;
+    private TextField freqTextField;
 
     @FXML
-    private TextArea textArea;
+    private Button rysujButton;
 
     @FXML
-    private TextField aParamTxt;
+    private TextField cTextField;
 
     @FXML
-    private TextField bParamTxt;
+    private TextField uTextField;
 
     @FXML
-    private TextField cParamTxt;
+    private TextField enaTextField;
 
     @FXML
-    private TextField dParamTxt;
+    private TextField gNaTextField;
 
     @FXML
-    void clicked(ActionEvent event) {
+    private TextField ekTextField;
 
-        double I=0;
-        double C=1.0;
-        double ENa=115.0;
-        double Ek=-12.0;
-        double El=10.6;
-        double gNa=120.0;
-        double gK=36.0;
-        double gL=0.3;
-        FirstOrderDifferentialEquations ode = new ODE(C,ENa,Ek,El,gNa,gK,gL,I);
+    @FXML
+    private TextField elTextField;
+
+    @FXML
+    private TextField gKTextField;
+
+    @FXML
+    private TextField gLTextField;
+
+    @FXML
+    private LineChart<Number, Number> inaChart;
+
+    @FXML
+    private NumberAxis inaxAxis;
+
+    @FXML
+    private NumberAxis inayAxis;
+
+    @FXML
+    private LineChart<Number, Number> ikChart;
+
+    @FXML
+    private NumberAxis ikxAxis;
+
+    @FXML
+    private NumberAxis ikyAxis;
+
+    @FXML
+    private LineChart<Number, Number> ilChart;
+
+    @FXML
+    private NumberAxis ilxAxis;
+
+    @FXML
+    private NumberAxis ilyAxis;
+
+    @FXML
+    private LineChart<Number, Number> mChart;
+
+    @FXML
+    private NumberAxis mxAxis;
+
+    @FXML
+    private NumberAxis myAxis;
+
+    @FXML
+    private LineChart<Number, Number> hChart;
+
+    @FXML
+    private NumberAxis hxAxis;
+
+    @FXML
+    private NumberAxis hyAxis;
+
+    @FXML
+    private LineChart<Number, Number> nChart;
+
+    @FXML
+    private NumberAxis nxAxis;
+
+    @FXML
+    private NumberAxis nyAxis;
+
+    private ArrayList<Double> time;
+    private ArrayList<Double> uValues;
+
+    private TextFormatter format() { //prywatna metoda (może ją użyc tylko metoda z klasy) zwracająca obiekt typu TextFormatter
+        //ustawienie formatowania tekstu w polach tekstowych (zeby nie wpisywać niedozwolonych wartości
+        Pattern pattern = Pattern.compile("[\\-]?\\d{0,10}([\\.]\\d{0,2})?"); //ustawienie wzoru formatowania tekstu
+
+        //ustawienie formatowania tekstu z użyciem interfejsu UnaryOperator
+        // Tworze obiekt klasy TextFormatter, w którego konstruktorze używam operatora lambda
+        //jesli wyrazenie wpisywane nie pasuje do wzoru formatowania nie pojawia się w polu tekstowym
+        TextFormatter formatter = new TextFormatter((UnaryOperator<TextFormatter.Change>) change -> {
+            return pattern.matcher(change.getControlNewText()).matches() ? change : null; //wyrazenie lambda zwraca null jesli wpisywany tekst nie pasuje do wzrou formatowania
+        });
+        return formatter; //metoda zwraca obiekt typu TextFormatter
+    }
+
+    @FXML
+    void initialize() {
+
+        cTextField.setTextFormatter(format());
+        enaTextField.setTextFormatter(format());
+        ekTextField.setTextFormatter(format());
+        elTextField.setTextFormatter(format());
+        gNaTextField.setTextFormatter(format());
+        gKTextField.setTextFormatter(format());
+        gLTextField.setTextFormatter(format());
+        uTextField.setTextFormatter(format());
+
+        cTextField.setText("1.0");
+        enaTextField.setText("115.0");
+        ekTextField.setText("-12.0");
+        elTextField.setText("10.6");
+        gNaTextField.setText("120");
+        gKTextField.setText("36.0");
+        gLTextField.setText("0.3");
+        uTextField.setText("0");
+    }
+
+    @FXML
+    void rysujClicked(ActionEvent event) {
+
+        double I = 0;
+        double C = 1.0;
+        double ENa = 115.0;
+        double Ek = -12.0;
+        double El = 10.6;
+        double gNa = 120.0;
+        double gK = 36.0;
+        double gL = 0.3;
+        FirstOrderDifferentialEquations ode = new ODE(C, ENa, Ek, El, gNa, gK, gL, I);
         //utworzenie integratora Runge Kutta
 
         FirstOrderIntegrator integrator = new ClassicalRungeKuttaIntegrator(0.01);
         //utworzneie obiektu klasy Path
-        Path path = new Path();
+        Path path = new Path(C, ENa, Ek, El, gNa, gK, gL, I);
         //dodanie do integratora step Handlera
         integrator.addStepHandler(path);
 
@@ -87,20 +195,20 @@ public class Controller {
         double T15 = (0.15 * te);
 
         //wartosci poczatkowe
-        double u0=0;
-        double am=(0.1*(25-u0))/(Math.exp((25-u0)/10)-1); //17a
-       double bm=4*Math.exp(-u0/18); //17b
-        double an=(0.01*(10-u0))/(Math.exp((10-u0)/10)-1); //18a
-        double bn=0.125*Math.exp(-u0/80); //18b
-        double ah=0.07*Math.exp(-u0/20); //19a
-        double bh=1/(Math.exp((30-u0)/30)-1); //19b
+        double u0 = 0;
+        double am = (0.1 * (25 - u0)) / (Math.exp((25 - u0) / 10) - 1); //17a
+        double bm = 4 * Math.exp(-u0 / 18); //17b
+        double an = (0.01 * (10 - u0)) / (Math.exp((10 - u0) / 10) - 1); //18a
+        double bn = 0.125 * Math.exp(-u0 / 80); //18b
+        double ah = 0.07 * Math.exp(-u0 / 20); //19a
+        double bh = 1 / (Math.exp((30 - u0) / 10) + 1); //19b
 
-        double m0=am/(am+bm);
-        double n0=an/(an+bn);
-        double h0=ah/(ah/bh);
+        double m0 = am / (am + bm);
+        double n0 = an / (an + bn);
+        double h0 = ah / (ah + bh);
 
         double[] yStart = new double[]{m0, n0, h0, u0}; //warunki początkowe
-        double[] yStop = new double[]{0, 1, 0 ,1};
+        double[] yStop = new double[]{0, 1, 0, 1};
 
         integrator.integrate(ode, 0, yStart, T15, yStop); //całkowanie równania
 
@@ -108,65 +216,165 @@ public class Controller {
         if ((path.getTime() < (T15) + Tk) && (path.getTime() > (T15) - Tk)) {
             System.out.println("nowe i");
             //jesli tak to zmiana prądu
-            I = 10;
+            I = 15;
             // ustawienie nowych wartosci początkowych
             m0 = path.getmValues().get(path.getmValues().size() - 1);
-            n0= path.getnValues().get(path.getnValues().size() - 1);
-            h0=path.gethValues().get(path.gethValues().size() - 1);
+            n0 = path.getnValues().get(path.getnValues().size() - 1);
+            h0 = path.gethValues().get(path.gethValues().size() - 1);
             u0 = path.getuValues().get(path.getuValues().size() - 1);
 
-            ode = new ODE(C,ENa,Ek,El,gNa,gK,gL,I);
+            ode = new ODE(C, ENa, Ek, El, gNa, gK, gL, I);
             yStart = new double[]{m0, n0, h0, u0}; //warunki początkowe
-            yStop = new double[]{0, 1, 0 ,1};
+            System.out.println(Arrays.toString(yStart));
+            yStop = new double[]{0, 1, 0, 1};
 
             //ponowne całkowanie równania
 
             integrator.integrate(ode, T15, yStart, te, yStop);
         }
 
-        ArrayList<Double> uValues = path.getuValues();
-        ArrayList<Double> mValues = path.gethValues(); //to cos nie działa, wgl widać wikres dobrze dopiero po rozszerzeniu okna i wartości są z kosmosu
-        ArrayList<Double> time = path.getTimes();
+        time = path.getTimes();
+        uValues = path.getuValues();
+        ArrayList<Double> IValues = new ArrayList<>();
 
+        ArrayList<Double> INaValues = path.getInas();
+        ArrayList<Double> IKValues = path.getIks();
+        ArrayList<Double> ILValues = path.getIls();
+
+        ArrayList<Double> mValues = path.getmValues();
+        ArrayList<Double> nValues = path.getnValues();
+        ArrayList<Double> hValues = path.gethValues();
 
         //utowrzenie serii danych
         XYChart.Series<Number, Number> uSeries = new XYChart.Series();
-        XYChart.Series<Number, Number> vSeries = new XYChart.Series();
-        XYChart.Series<Number, Number> iSeries = new XYChart.Series();
+        XYChart.Series<Number, Number> ISeries = new XYChart.Series();
+
+        XYChart.Series<Number, Number> INaSeries = new XYChart.Series();
+        XYChart.Series<Number, Number> IKSeries = new XYChart.Series();
+        XYChart.Series<Number, Number> ILSeries = new XYChart.Series();
+
+        XYChart.Series<Number, Number> mSeries = new XYChart.Series();
+        XYChart.Series<Number, Number> nSeries = new XYChart.Series();
+        XYChart.Series<Number, Number> hSeries = new XYChart.Series();
 
         for (int i = 0; i < uValues.size(); i++) {
-        //dodanie wartosci do serii danych
-            if (time.get(i) > 7.5) iSeries.getData().add(new XYChart.Data<>(time.get(i), I));
-            else iSeries.getData().add(new XYChart.Data<>(time.get(i), 0));
+            //dodanie wartosci do serii danych
+            if (time.get(i) > 7.5) ISeries.getData().add(new XYChart.Data<>(time.get(i), I));
+            else ISeries.getData().add(new XYChart.Data<>(time.get(i), 0));
 
             uSeries.getData().add(new XYChart.Data<>(time.get(i), uValues.get(i)));
-            vSeries.getData().add(new XYChart.Data<>(time.get(i), mValues.get(i)));
+
+            INaSeries.getData().add(new XYChart.Data<>(time.get(i), INaValues.get(i)));
+            IKSeries.getData().add(new XYChart.Data<>(time.get(i), IKValues.get(i)));
+            ILSeries.getData().add(new XYChart.Data<>(time.get(i), ILValues.get(i)));
+
+            mSeries.getData().add(new XYChart.Data<>(time.get(i), mValues.get(i)));
+            nSeries.getData().add(new XYChart.Data<>(time.get(i), nValues.get(i)));
+            hSeries.getData().add(new XYChart.Data<>(time.get(i), hValues.get(i)));
 
         }
 
         //dodanie serii do wykresu i opisanie osi
-        vChart.getData().add(vSeries);
-        uChart.getData().add(uSeries);
-        IChart.getData().add(iSeries);
+        utChart.getData().add(uSeries);
+        itChart.getData().add(ISeries);
 
-        yAxisiChart.setTickUnit(1);
-        yAxisiChart.setAutoRanging(true);
-        xAxisiChart.setTickUnit(1);
-        xAxisiChart.setAutoRanging(true);
+        mChart.getData().add(mSeries);
+        nChart.getData().add(nSeries);
+        hChart.getData().add(hSeries);
+
+        inaChart.getData().add(INaSeries);
+        ikChart.getData().add(IKSeries);
+        ilChart.getData().add(ILSeries);
+
+        //hmn
+        hxAxis.setTickUnit(1);
+        hxAxis.setAutoRanging(true);
+        mxAxis.setTickUnit(1);
+        mxAxis.setAutoRanging(true);
+        nxAxis.setTickUnit(1);
+        nxAxis.setAutoRanging(true);
+        hyAxis.setTickUnit(1);
+        hyAxis.setAutoRanging(true);
+        myAxis.setTickUnit(1);
+        myAxis.setAutoRanging(true);
+        nyAxis.setTickUnit(1);
+        nyAxis.setAutoRanging(true);
+
+        uxAxis.setTickUnit(1);
+        uxAxis.setAutoRanging(true);
+        uyAxis.setTickUnit(1);
+        uyAxis.setAutoRanging(true);
+
+        ixAxis.setTickUnit(1);
+        ixAxis.setAutoRanging(true);
+        iyAxis.setTickUnit(1);
+        iyAxis.setAutoRanging(true);
+
+        ikxAxis.setTickUnit(1);
+        ikxAxis.setAutoRanging(true);
+        ikyAxis.setTickUnit(1);
+        ikyAxis.setAutoRanging(true);
+
+        inaxAxis.setTickUnit(1);
+        inaxAxis.setAutoRanging(true);
+        inayAxis.setTickUnit(1);
+        inayAxis.setAutoRanging(true);
+
+        ilxAxis.setTickUnit(1);
+        ilxAxis.setAutoRanging(true);
+        ilyAxis.setTickUnit(1);
+        ilyAxis.setAutoRanging(true);
+
+        calculateStats(uValues);
 
 
-        yAxisUChart.setTickUnit(1);
-        yAxisUChart.setAutoRanging(true);
-        xAxisuChart.setTickUnit(1);
-        xAxisuChart.setAutoRanging(true);
+    }
 
+    private void calculateStats(ArrayList<Double> u) {
 
-        yAxisvChart.setTickUnit(1);
-        yAxisvChart.setAutoRanging(true);
-        xAxisvChart.setTickUnit(1);
-        xAxisvChart.setAutoRanging(true);
+        ArrayList<Double> times = new ArrayList<>();
+        ArrayList<Double> maxU = new ArrayList<>();
+
+        for (int i = 1; i < u.size() - 1; i++) {
+            if (u.get(i) > u.get(i - 1) && u.get(i) > u.get(i + 1) && u.get(i) > 1) {
+                times.add(time.get(i));
+                maxU.add(uValues.get(i));
+            }
+        }
+
+        System.out.println(Arrays.toString(maxU.toArray()));
+        double mean = 0;
+        double sum = 0;
+        double sumstd = 0;
+        double std = 0;
+        double max = 0;
+        double fs = 0;
+        double sumTime = 0;
+
+        for (int i = 0; i < times.size(); i++) {
+            if (max < maxU.get(i)) max = maxU.get(i);
+
+            sum += maxU.get(i);
+            if (i > 0) sumTime += times.get(i) - times.get(i - 1);
+            else sumTime = time.get(i);
+        }
+
+        mean = sum / maxU.size();
+        fs = 1 / (sumTime / (times.size() - 1));
+
+        for (int i = 0; i < times.size(); i++) {
+            sumstd += (Math.pow(maxU.get(i) - mean, 2) / (times.size() - 1));
+        }
+
+        std = Math.pow(sumstd, 0.5);
+
+        freqTextField.setText(String.format("%.2f", fs));
+        maxTextField.setText(String.format("%.2f", max));
+        avgTextField.setText(String.format("%.2f", mean));
+        stdTextField.setText(String.format("%.2f", std));
 
 
     }
 
 }
+
