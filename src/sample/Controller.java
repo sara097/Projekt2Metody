@@ -2,56 +2,85 @@ package sample;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.nonstiff.ClassicalRungeKuttaIntegrator;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
+/**
+ * Class Controller represents GUI control methods.
+ * @author Julia Szymczak and Sara Strzalka
+ * @version 1.0
+ */
 public class Controller {
 
+    /**
+     * Represents chart with potential in time values.
+     */
     @FXML
     private LineChart<Number, Number> utChart;
 
+    /**
+     * Represents x axis of potential chart.
+     */
     @FXML
     private NumberAxis uxAxis;
 
+    /**
+     * Represents y axis of potential chart.
+     */
     @FXML
     private NumberAxis uyAxis;
 
+    /**
+     * Represents current in time chart.
+     */
     @FXML
     private LineChart<Number, Number> itChart;
 
+    /**
+     * Represents x axis of current chart.
+     */
     @FXML
     private NumberAxis ixAxis;
 
+    /**
+     * Represents y axis of current chart.
+     */
     @FXML
     private NumberAxis iyAxis;
 
+    /**
+     * Represents text field with standard deviation
+     */
     @FXML
     private TextField stdTextField;
 
+    /**
+     * Represents text field with average value of maximum potential.
+     */
     @FXML
     private TextField avgTextField;
 
+    /**
+     * Represents textfield with value of maximum potential.
+     */
     @FXML
     private TextField maxTextField;
 
+    /**
+     * Represents textfield with frequency value.
+     */
     @FXML
     private TextField freqTextField;
-
-    @FXML
-    private Button rysujButton;
 
     @FXML
     private TextField cTextField;
@@ -131,9 +160,20 @@ public class Controller {
     @FXML
     private NumberAxis nyAxis;
 
+    /**
+     * Represents time values.
+     */
     private ArrayList<Double> time;
+    /**
+     * Represents potential values.
+     */
     private ArrayList<Double> uValues;
 
+    /**
+     * Returns way of text format to write parameters.
+     *
+     * @return TextFormatter
+     */
     private TextFormatter format() { //prywatna metoda (może ją użyc tylko metoda z klasy) zwracająca obiekt typu TextFormatter
         //ustawienie formatowania tekstu w polach tekstowych (zeby nie wpisywać niedozwolonych wartości
         Pattern pattern = Pattern.compile("[\\-]?\\d{0,10}([\\.]\\d{0,2})?"); //ustawienie wzoru formatowania tekstu
@@ -147,6 +187,9 @@ public class Controller {
         return formatter; //metoda zwraca obiekt typu TextFormatter
     }
 
+    /**
+     * Initialize application after launching.
+     */
     @FXML
     void initialize() {
 
@@ -169,6 +212,10 @@ public class Controller {
         uTextField.setText("0");
     }
 
+    /**
+     * Method called after button clicked. Draws plots.
+     * @param event Button pressed.
+     */
     @FXML
     void rysujClicked(ActionEvent event) {
 
@@ -185,7 +232,7 @@ public class Controller {
 
         FirstOrderIntegrator integrator = new ClassicalRungeKuttaIntegrator(0.01);
         //utworzneie obiektu klasy Path
-        Path path = new Path(C, ENa, Ek, El, gNa, gK, gL, I);
+        Path path = new Path(ENa, Ek, El, gNa, gK, gL);
         //dodanie do integratora step Handlera
         integrator.addStepHandler(path);
 
@@ -235,7 +282,6 @@ public class Controller {
 
         time = path.getTimes();
         uValues = path.getuValues();
-        ArrayList<Double> IValues = new ArrayList<>();
 
         ArrayList<Double> INaValues = path.getInas();
         ArrayList<Double> IKValues = path.getIks();
@@ -330,6 +376,10 @@ public class Controller {
 
     }
 
+    /**
+     * Method that calculates statistics of simulation.
+     * @param u potential values.
+     */
     private void calculateStats(ArrayList<Double> u) {
 
         ArrayList<Double> times = new ArrayList<>();
