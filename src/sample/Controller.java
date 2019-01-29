@@ -81,82 +81,134 @@ public class Controller {
      */
     @FXML
     private TextField freqTextField;
-
+    /**
+     * Represents textfield with capacity value.
+     */
     @FXML
     private TextField cTextField;
-
+    /**
+     * Represents textfield with voltage value.
+     */
     @FXML
     private TextField uTextField;
-
+    /**
+     * Represents textfield with sodium's reversal potential value.
+     */
     @FXML
     private TextField enaTextField;
-
+    /**
+     * Represents textfield with sodium's conductance value.
+     */
     @FXML
     private TextField gNaTextField;
-
+    /**
+     * Represents textfield with potassium's reversal potential value.
+     */
     @FXML
     private TextField ekTextField;
-
+    /**
+     * Represents textfield with chlorine's reversal potential value.
+     */
     @FXML
     private TextField elTextField;
-
+    /**
+     * Represents textfield with potassium's conductance value.
+     */
     @FXML
     private TextField gKTextField;
-
+    /**
+     * Represents textfield with chlorine's conductance value.
+     */
     @FXML
     private TextField gLTextField;
-
+    /**
+     * Represents chart for sodium's flow
+     */
     @FXML
     private LineChart<Number, Number> inaChart;
-
+    /**
+     * Represents x Axis for sodium's flow
+     */
     @FXML
     private NumberAxis inaxAxis;
-
+    /**
+     * Represents y Axis for sodium's flow
+     */
     @FXML
     private NumberAxis inayAxis;
-
+    /**
+     * Represents chart for potassium's flow
+     */
     @FXML
     private LineChart<Number, Number> ikChart;
-
+    /**
+     * Represents x Axis for potassium's flow
+     */
     @FXML
     private NumberAxis ikxAxis;
-
+    /**
+     * Represents y Axis for potassium's flow
+     */
     @FXML
     private NumberAxis ikyAxis;
-
+    /**
+     * Represents chart for chlorine's flow
+     */
     @FXML
     private LineChart<Number, Number> ilChart;
-
+    /**
+     * Represents x Axis for chlorine's flow
+     */
     @FXML
     private NumberAxis ilxAxis;
-
+    /**
+     * Represents y Axis for chlorine's flow
+     */
     @FXML
     private NumberAxis ilyAxis;
-
+    /**
+     * Represents chart for m parameter's flow
+     */
     @FXML
     private LineChart<Number, Number> mChart;
-
+    /**
+     * Represents x Axis for m parameter's flow
+     */
     @FXML
     private NumberAxis mxAxis;
-
+    /**
+     * Represents y Axis for m parameter's flow
+     */
     @FXML
     private NumberAxis myAxis;
-
+    /**
+     * Represents chart for h parameter's flow
+     */
     @FXML
     private LineChart<Number, Number> hChart;
-
+    /**
+     * Represents x Axis for h parameter's flow
+     */
     @FXML
     private NumberAxis hxAxis;
-
+    /**
+     * Represents y Axis for h parameter's flow
+     */
     @FXML
     private NumberAxis hyAxis;
-
+    /**
+     * Represents chart for n parameter's flow
+     */
     @FXML
     private LineChart<Number, Number> nChart;
-
+    /**
+     * Represents x Axis for n parameter's flow
+     */
     @FXML
     private NumberAxis nxAxis;
-
+    /**
+     * Represents y Axis for n parameter's flow
+     */
     @FXML
     private NumberAxis nyAxis;
 
@@ -189,6 +241,7 @@ public class Controller {
 
     /**
      * Initialize application after launching.
+     * Sets default values
      */
     @FXML
     void initialize() {
@@ -213,7 +266,9 @@ public class Controller {
     }
 
     /**
-     * Method called after button clicked. Draws plots.
+     * Method called after button clicked.
+     * Removes all previous data and calculates with new parameters.
+     * Draws plots with stored data.
      * @param event Button pressed.
      */
     @FXML
@@ -389,7 +444,7 @@ public class Controller {
     }
 
     /**
-     * Method that calculates statistics of simulation.
+     * Method that calculates statistics of simulation such as generation frequency, peak's average height, maximal peak's value and standard deviation.
      * @param u potential values.
      */
     private void calculateStats(ArrayList<Double> u) {
