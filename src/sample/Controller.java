@@ -219,14 +219,26 @@ public class Controller {
     @FXML
     void rysujClicked(ActionEvent event) {
 
+        utChart.getData().removeAll(utChart.getData());
+        itChart.getData().removeAll(itChart.getData());
+
+        mChart.getData().removeAll(mChart.getData());
+        nChart.getData().removeAll(nChart.getData());
+        hChart.getData().removeAll(hChart.getData());
+
+        inaChart.getData().removeAll(inaChart.getData());
+        ikChart.getData().removeAll(ikChart.getData());
+        ilChart.getData().removeAll(ilChart.getData());
+
         double I = 0;
-        double C = 1.0;
-        double ENa = 115.0;
-        double Ek = -12.0;
-        double El = 10.6;
-        double gNa = 120.0;
-        double gK = 36.0;
-        double gL = 0.3;
+        double C = Double.valueOf(cTextField.getText());
+        double ENa = Double.valueOf(enaTextField.getText());
+        double Ek = Double.valueOf(ekTextField.getText());
+        double El = Double.valueOf(elTextField.getText());
+        double gNa = Double.valueOf(gNaTextField.getText());
+        double gK = Double.valueOf(gKTextField.getText());
+        double gL = Double.valueOf(gLTextField.getText());
+
         FirstOrderDifferentialEquations ode = new ODE(C, ENa, Ek, El, gNa, gK, gL, I);
         //utworzenie integratora Runge Kutta
 
@@ -242,7 +254,7 @@ public class Controller {
         double T15 = (0.15 * te);
 
         //wartosci poczatkowe
-        double u0 = 0;
+        double u0 = Double.valueOf(uTextField.getText());
         double am = (0.1 * (25 - u0)) / (Math.exp((25 - u0) / 10) - 1); //17a
         double bm = 4 * Math.exp(-u0 / 18); //17b
         double an = (0.01 * (10 - u0)) / (Math.exp((10 - u0) / 10) - 1); //18a
@@ -418,7 +430,7 @@ public class Controller {
 
         std = Math.pow(sumstd, 0.5);
 
-        freqTextField.setText(String.format("%.2f", fs));
+        freqTextField.setText(String.format("%.4f", fs));
         maxTextField.setText(String.format("%.2f", max));
         avgTextField.setText(String.format("%.2f", mean));
         stdTextField.setText(String.format("%.2f", std));
