@@ -10,6 +10,7 @@ import javafx.scene.control.TextFormatter;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.nonstiff.ClassicalRungeKuttaIntegrator;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.UnaryOperator;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
 
 /**
  * Class Controller represents GUI control methods.
+ *
  * @author Julia Szymczak and Sara Strzalka
  * @version 1.0
  */
@@ -269,6 +271,7 @@ public class Controller {
      * Method called after button clicked.
      * Removes all previous data and calculates with new parameters.
      * Draws plots with stored data.
+     *
      * @param event Button pressed.
      */
     @FXML
@@ -320,6 +323,9 @@ public class Controller {
         double m0 = am / (am + bm);
         double n0 = an / (an + bn);
         double h0 = ah / (ah + bh);
+        System.out.println(m0);
+        System.out.println(n0);
+        System.out.println(h0);
 
         double[] yStart = new double[]{m0, n0, h0, u0}; //warunki początkowe
         double[] yStop = new double[]{0, 1, 0, 1};
@@ -350,40 +356,21 @@ public class Controller {
         time = path.getTimes();
         uValues = path.getuValues();
 
-        ArrayList<Double> INaValues = path.getInas();
-        ArrayList<Double> IKValues = path.getIks();
-        ArrayList<Double> ILValues = path.getIls();
-
-        ArrayList<Double> mValues = path.getmValues();
-        ArrayList<Double> nValues = path.getnValues();
-        ArrayList<Double> hValues = path.gethValues();
-
-        //utowrzenie serii danych
-        XYChart.Series<Number, Number> uSeries = new XYChart.Series();
+        XYChart.Series<Number, Number> uSeries = path.getuSeries();
         XYChart.Series<Number, Number> ISeries = new XYChart.Series();
 
-        XYChart.Series<Number, Number> INaSeries = new XYChart.Series();
-        XYChart.Series<Number, Number> IKSeries = new XYChart.Series();
-        XYChart.Series<Number, Number> ILSeries = new XYChart.Series();
+        XYChart.Series<Number, Number> INaSeries = path.getINaSeries();
+        XYChart.Series<Number, Number> IKSeries = path.getIKSeries();
+        XYChart.Series<Number, Number> ILSeries = path.getILSeries();
 
-        XYChart.Series<Number, Number> mSeries = new XYChart.Series();
-        XYChart.Series<Number, Number> nSeries = new XYChart.Series();
-        XYChart.Series<Number, Number> hSeries = new XYChart.Series();
+        XYChart.Series<Number, Number> mSeries = path.getmSeries();
+        XYChart.Series<Number, Number> nSeries = path.getnSeries();
+        XYChart.Series<Number, Number> hSeries = path.gethSeries();
 
         for (int i = 0; i < uValues.size(); i++) {
             //dodanie wartosci do serii danych
             if (time.get(i) > 7.5) ISeries.getData().add(new XYChart.Data<>(time.get(i), I));
             else ISeries.getData().add(new XYChart.Data<>(time.get(i), 0));
-
-            uSeries.getData().add(new XYChart.Data<>(time.get(i), uValues.get(i)));
-
-            INaSeries.getData().add(new XYChart.Data<>(time.get(i), INaValues.get(i)));
-            IKSeries.getData().add(new XYChart.Data<>(time.get(i), IKValues.get(i)));
-            ILSeries.getData().add(new XYChart.Data<>(time.get(i), ILValues.get(i)));
-
-            mSeries.getData().add(new XYChart.Data<>(time.get(i), mValues.get(i)));
-            nSeries.getData().add(new XYChart.Data<>(time.get(i), nValues.get(i)));
-            hSeries.getData().add(new XYChart.Data<>(time.get(i), hValues.get(i)));
 
         }
 
@@ -445,6 +432,7 @@ public class Controller {
 
     /**
      * Method that calculates statistics of simulation such as generation frequency, peak's average height, maximal peak's value and standard deviation.
+     *
      * @param u potential values.
      */
     private void calculateStats(ArrayList<Double> u) {

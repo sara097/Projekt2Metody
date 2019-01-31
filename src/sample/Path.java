@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.scene.chart.XYChart;
 import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
@@ -50,6 +51,37 @@ public class Path implements StepHandler {
      * Represents array with ion current values.
      */
     private ArrayList<Double> Ils=new ArrayList<>();
+
+    /**
+     * Represents array with potential's values.
+     */
+    private XYChart.Series<Number, Number> uSeries = new XYChart.Series();
+    /**
+     * Represents array with sodium current's values.
+     */
+    private XYChart.Series<Number, Number> INaSeries = new XYChart.Series();
+    /**
+     * Represents array with potassium current's values.
+     */
+    private XYChart.Series<Number, Number> IKSeries = new XYChart.Series();
+    /**
+     * Represents array with chlorine current's values.
+     */
+    private XYChart.Series<Number, Number> ILSeries = new XYChart.Series();
+    /**
+     * Represents array with m parameter's values.
+     */
+    private XYChart.Series<Number, Number> mSeries = new XYChart.Series();
+    /**
+     * Represents array with n parameter's values.
+     */
+    private XYChart.Series<Number, Number> nSeries = new XYChart.Series();
+    /**
+     * Represents array with h parameter's values.
+     */
+    private XYChart.Series<Number, Number> hSeries = new XYChart.Series();
+
+
     /**
      * Represents sodium potential
      */
@@ -177,6 +209,62 @@ public class Path implements StepHandler {
 
     }
 
+    /**
+     * Returns potential's values Series
+     * @return potential's values Series
+     */
+    public XYChart.Series<Number, Number> getuSeries() {
+        return uSeries;
+    }
+
+    /**
+     * Returns sodium current's values Series
+     * @return sodium current's values Series
+     */
+    public XYChart.Series<Number, Number> getINaSeries() {
+        return INaSeries;
+    }
+
+    /**
+     * Returns potassium current's values Series
+     * @return potassium current's values Series
+     */
+    public XYChart.Series<Number, Number> getIKSeries() {
+        return IKSeries;
+    }
+
+    /**
+     * Returns chlorine current's values Series
+     * @return chlorine current's values Series
+     */
+    public XYChart.Series<Number, Number> getILSeries() {
+        return ILSeries;
+    }
+
+    /**
+     * Returns m parameter's values Series
+     * @return m parameter's values Series
+     */
+    public XYChart.Series<Number, Number> getmSeries() {
+        return mSeries;
+    }
+
+    /**
+     * Returns n parameter's values Series
+     * @return n parameter's values Series
+     */
+    public XYChart.Series<Number, Number> getnSeries() {
+        return nSeries;
+    }
+
+    /**
+     * Returns h parameter's values Series
+     * @return h parameter's values Series
+     */
+    public XYChart.Series<Number, Number> gethSeries() {
+        return hSeries;
+    }
+
 
     /**
      * Method called for handling integration steps
@@ -195,6 +283,16 @@ public class Path implements StepHandler {
         double ina = gNa * Math.pow(x[0], 3) * x[2] * (x[3] - ENa);
         double ik = gK * Math.pow(x[1], 4) * (x[3] - EK);
         double il = gL * (x[3] - EL);
+
+        uSeries.getData().add(new XYChart.Data<>(time, x[3]));
+
+        INaSeries.getData().add(new XYChart.Data<>(time, ina));
+        IKSeries.getData().add(new XYChart.Data<>(time, ik));
+        ILSeries.getData().add(new XYChart.Data<>(time, il));
+
+        mSeries.getData().add(new XYChart.Data<>(time, x[0]));
+        nSeries.getData().add(new XYChart.Data<>(time, x[1]));
+        hSeries.getData().add(new XYChart.Data<>(time, x[2]));
 
         Inas.add(ina);
         Iks.add(ik);
